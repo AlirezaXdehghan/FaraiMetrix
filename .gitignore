@@ -1,0 +1,25 @@
+node_modules/
+*.tsbuildinfo
+
+# Local databases
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+.metrix-data/
+
+# Secrets. Examples are committed; real files never are.
+.env
+.env.*
+!.env.example
+tenants.json
+!deployments/*.json
+
+# Exported mail for historical import holds personal data.
+/mail/
+
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+*.log

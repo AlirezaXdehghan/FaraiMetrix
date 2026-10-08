@@ -1,0 +1,14 @@
+{
+  "tenants": [
+    {
+      "id": "brusato",
+      "deployment": "deployments/brusato.json",
+      "apiKeys": ["env:METRIX_BRUSATO_API_KEY"],
+      "consolePassword": "env:METRIX_BRUSATO_CONSOLE_PASSWORD",
+      "calldash": {
+        "secret": "env:METRIX_BRUSATO_CALLDASH_SECRET",
+        "tenantId": "default"
+      }
+    }
+  ]
+}

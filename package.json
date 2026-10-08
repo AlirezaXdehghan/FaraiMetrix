@@ -1,0 +1,23 @@
+{
+  "name": "farai-metrix",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Farai Metrix: measure a business process as a black box. IN boundary, OUT boundary, elapsed time; open the box only when useful.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"test/**/*.test.ts\"",
+    "gate": "npm run typecheck && npm test",
+    "start": "node src/main.ts",
+    "import-eml": "node scripts/import-eml.ts",
+    "rematch": "node scripts/rematch.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.8.0"
+  },
+  "license": "UNLICENSED"
+}

@@ -1,0 +1,63 @@
+{
+  "name": "Brusato Trasporti — quotation pilot",
+  "notes": [
+    "Spec §9: start at the coarsest useful resolution. IN = request complete, OUT = quote sent email.",
+    "TO CONFIRM with Brusato (spec §14): the quotes mailbox, the quote number format, and how a quotation email can be told apart from a clarification reply. The values below are placeholders.",
+    "Baseline (CallDash OBSERVE): CallDash does not fill the form, so there is no REQUEST_COMPLETE. The IN is the end of a call that CallDash classified as a new request. That is no earlier than the moment the request was complete, so baseline elapsed is if anything slightly short: it never flatters later modes.",
+    "quote-preparation is defined but stays empty until the box needs opening (spec §5, §12 step 6)."
+  ],
+  "mailboxes": ["preventivi@brusato.example"],
+  "emailThreading": true,
+  "boxes": [
+    {
+      "boxType": "quotation",
+      "label": "Quotation",
+      "in": [
+        { "source": "calldash", "eventType": "REQUEST_COMPLETE" },
+        { "source": "calldash", "eventType": "CALL_COMPLETED", "attrs": { "status": "done" } },
+        { "source": "email", "eventType": "EMAIL_RECEIVED", "attrs": { "mailbox": "preventivi@brusato.example" } },
+        { "source": "system", "eventType": "REQUEST_COMPLETE" }
+      ],
+      "gate": [
+        { "source": "calldash", "eventType": "REQUEST_COMPLETE" },
+        { "source": "calldash", "eventType": "OBSERVATION_READY", "attrs": { "intent": "new_request" } },
+        { "source": "email", "eventType": "EMAIL_RECEIVED", "attrs": { "mailbox": "preventivi@brusato.example" } },
+        { "source": "system", "eventType": "REQUEST_COMPLETE" },
+        { "source": "manual", "eventType": "REQUEST_COMPLETE" }
+      ],
+      "out": [
+        {
+          "source": "email",
+          "eventType": "EMAIL_SENT",
+          "attrs": { "mailbox": "preventivi@brusato.example" },
+          "attachment": "(preventiv|offert|quot).*\\.pdf$"
+        },
+        { "source": "system", "eventType": "QUOTE_SENT" }
+      ]
+    },
+    {
+      "boxType": "quote-preparation",
+      "label": "Quote preparation",
+      "parent": "quotation",
+      "in": [{ "source": "agent", "eventType": "AGENT_START", "attrs": { "boxType": "quote-preparation" } }],
+      "out": [{ "source": "agent", "eventType": "AGENT_DONE", "attrs": { "boxType": "quote-preparation" } }]
+    }
+  ],
+  "refExtractors": [
+    {
+      "system": "brusato-quote",
+      "separator": "/",
+      "source": "email",
+      "field": "subject",
+      "pattern": "(?:preventivo|prev\\.|offerta)\\s*(?:n\\.?|nr\\.?|#)?\\s*(?<id>\\d{1,6}\\s*[/-]\\s*\\d{2,4})"
+    },
+    {
+      "system": "brusato-quote",
+      "separator": "/",
+      "source": "email",
+      "field": "attachment",
+      "pattern": "(?:preventivo|prev|offerta)[_ -]*(?:n\\.?|nr\\.?)?[_ -]*(?<id>\\d{1,6}[_/-]\\d{2,4})"
+    }
+  ],
+  "modeSchedule": []
+}
